@@ -1,0 +1,13 @@
+.vscode/*
+obj64/*
+*.pyc
+__pycache__/*
+*.dir
+*.pub
+*.pri
+*.dat
+.DS_Store
+*/remus/*
+*/json-3.11.3/*
+*/Rabia_build/*
+start.ps1
