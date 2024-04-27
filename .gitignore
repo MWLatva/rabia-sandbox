@@ -11,3 +11,4 @@ __pycache__/*
 */json-3.11.3/*
 */Rabia_build/*
 start.ps1
+src/rdma/cmake.ps1

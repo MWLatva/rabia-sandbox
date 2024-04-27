@@ -6,8 +6,12 @@
 #include <netinet/in.h> 
 #include <sys/socket.h> 
 #include <unistd.h> 
+#include <google/protobuf/message_lite.h> 
+#include "../../Rabia_build/message.pb.h"
+//using namespace google::protobuf;
   
-using namespace std; 
+//using namespace std; 
+// namespace google::protobuf;
   
 int main() 
 { 
@@ -23,6 +27,8 @@ int main()
   // binding socket. 
   bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)); 
 
+  message::Msg sample_message;
+
   // listening to the assigned socket 
   listen(serverSocket, 5); 
 
@@ -32,7 +38,9 @@ int main()
   // recieving data 
   char buffer[1024] = { 0 }; 
   recv(clientSocket, buffer, sizeof(buffer), 0); 
-  cout << "Message from client: " << buffer << endl; 
+  std::string data(buffer);
+  sample_message.ParseFromString(buffer);//couldnt figure out how to get thsi linked :(
+  std::cout << "Message from client recieved: \n" << sample_message.value() << std::endl; 
 
   // closing the socket. 
   close(serverSocket); 
