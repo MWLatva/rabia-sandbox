@@ -7,6 +7,7 @@
 
 #include <remus/rdma/connection_map.h>
 #include <remus/util/status.h>
+//#include <rome/rdma/connection_manager/connection_manager.h>
 
 #include <atomic>
 #include <thread>
@@ -47,14 +48,14 @@ int main() {
 
     //start a connection manager on the 'self' peer
     auto status = cm->Start(self_peer.address, self_peer.port);
-    RETURN_STATUSVAL_FROM_ERROR(status);
+    RETURN_STATUSVAL_ON_ERROR(status);
 
     // connect self peer to cm
     auto connected = cm->Connect(self_peer.id, self_peer.address, self_peer.port);
     while (connected.status.t == Unavailable) {
         connected = cm->Connect(self_peer.id, self_peer.address, self_peer.port);
     }
-    RETURN_STATUSVAL_FROM_ERROR(connected.status);
+    RETURN_STATUSVAL_ON_ERROR(connected.status);
     ROME_INFO("Init done with {}", self_peer.address);
 
     //connect other peer to cm
@@ -62,7 +63,7 @@ int main() {
     while (connected.status.t == Unavailable) {
         connected = cm->Connect(other_peer.id, other_peer.address, other_peer.port);
     }
-    RETURN_STATUSVAL_FROM_ERROR(connected.status);
+    RETURN_STATUSVAL_ON_ERROR(connected.status);
     ROME_INFO("Init done with {}", other_peer.address);
 
     //__________________

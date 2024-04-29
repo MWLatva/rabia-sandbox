@@ -5,11 +5,16 @@ project(rrdma)
 list(APPEND CMAKE_MODULE_PATH "/usr/local/lib/cmake")
 list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib/cmake")
 
+find_package(RDMA REQUIRED)
+
 find_package(remus REQUIRED)
 message(STATUS "Using remus version ${remus_VERSION}")
 
 find_package(Protobuf REQUIRED)
 message(STATUS "Using protobuf version ${Protobuf_VERSION}")
+
+find_package(rome REQUIRED)
+message(STATUS "using rome vers ${rome_VERSION}")
 
 set(Protobuf_IMPORT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/..)
 #protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS metrics.proto colosseum.proto testutil.proto)  
@@ -26,7 +31,7 @@ target_link_libraries(protos PUBLIC protobuf::libprotobuf)
 
 add_executable(client node2/node2.cc)
 add_executable(server node1/node1.cc)
-target_link_libraries(client PUBLIC remus::rdma remus::workload remus::util)
+target_link_libraries(client PUBLIC remus::rdma remus::workload remus::util rdma::cm)
 target_link_libraries(server PUBLIC remus::rdma remus::workload remus::util)
 
 # add_subdirectory(node1)
