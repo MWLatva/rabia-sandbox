@@ -150,27 +150,38 @@ int main(int argc, char **argv) {
     ROME_INFO("Init 2 cms!");
 
 
-    if(args.iget("--server")){
-        while (true)
+    if(args.bget("--server")){
+        ROME_INFO("started server track");
+        bool listen = true;
+        while (listen)
         {
             for(int id = 0; id < args.iget("--node_count"); id++){
                 if (id == args.iget("--node_id")) continue; // skip my id
                 // Try to get a value
-                std::optional<IHTOPProto> maybe_req = receiver_map[id]->channel()->TryReceive<IHTOPProto>();
+                std::optional<IHTOPProto> maybe_req = sender_map[id]->channel()->TryReceive<IHTOPProto>();
                 // value here referes to the optional and not the IHTOpProto itself...
                 if (!maybe_req.has_value()){
+                    //ROME_INFO("nope");
                     continue;
                 }
+                ROME_INFO("receive had value! ");
                 IHTOPProto request = maybe_req.value();
                 auto op = request.op_type();
-                ROME_INFO("got {} from rdma connection", op);
+                if (op == GET_RES){
+                    ROME_INFO("got get_res from rdma connection");
+                }
+                ROME_INFO("got {} from the key", request.key());
+                listen = false;
+                
             }
         }
     }
 
-    if(!args.iget("--server")){
+    if(!args.bget("--server")){
         IHTOPProto response;
         response.set_op_type(GET_RES);
+        response.set_key(33);
+        response.set_value(0);
         // Send the response
         int id = 0;
         sss::Status stat = sender_map[id]->channel()->Send(response);
